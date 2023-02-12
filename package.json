@@ -17,8 +17,16 @@
     "mysql": "^2.18.1",
     "request": "^2.88.2"
   },
-  "description": "",
   "devDependencies": {
     "nodemon": "^2.0.20"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Leewonchan14/webtest.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Leewonchan14/webtest/issues"
+  },
+  "homepage": "https://github.com/Leewonchan14/webtest#readme",
+  "description": ""
 }
