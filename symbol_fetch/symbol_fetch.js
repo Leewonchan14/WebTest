@@ -18,15 +18,17 @@ connection.connect((err) => {
     connection.query(create_sql, function (err, results) {
       //create문이 에러면 로그 띄우기
       if(err) console.log("'stock' 테이블 이미 있음");
-      else console.log("stock 테이블 생성");
-      //테이블 생성,초기화 이후 데이터 저장
-      var insert_sql = `INSERT INTO stock values ?;`;
-      //db에 데이터 저장
-      connection.query(insert_sql, [stock.data], function (err, results) {
-        if (err) console.log(err);
-        else console.log("stock 테이블 정보 저장 완료");
-        connection.end();
-      });
+      else {
+        console.log("stock 테이블 생성");
+        //테이블 생성,초기화 이후 데이터 저장
+        var insert_sql = `INSERT INTO stock values ?;`;
+        //db에 데이터 저장
+        connection.query(insert_sql, [stock.data], function (err, results) {
+          if (err) console.log(err);
+          else console.log("stock 테이블 정보 저장 완료");
+          connection.end();
+        });
+      }
     });
   }
 });
