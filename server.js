@@ -20,12 +20,12 @@ const css_list = [
   fs.readFileSync("./css/title.css", "utf8"),
   fs.readFileSync("./css/underbox.css", "utf8"),
 ];
-
+/**미리읽은 css */
 var css = "";
 css_list.map((css_element) => {
   css += `<style>${css_element}</style>`;
 });
-
+/**hhmmss */
 var time_list = fs.readFileSync("./date.txt", "utf8").split(",");
 
 const server = express();
@@ -40,14 +40,8 @@ server.use(bodyParser.urlencoded({ extended: true }));
 
 //html 템플릿 생성
 var html = {
-  /**
-   * 홈페이지는 css를 배열로 받은뒤 html 문자열을 반환함*/
-  hompage: function (css_list = []) {
-    var css = "";
-    css_list.map((css_element) => {
-      css += `<style>${css_element}</style>`;
-    });
-    return `<!DOCTYPE html>
+  /** Dom부터 nav까지 */
+  top : `<!DOCTYPE html>
   <html lang="en">
   <head>
   ${css}
@@ -66,9 +60,74 @@ var html = {
           <form class="title__search" method="post">
               <input name="stock" type="text" placeholder="enter the stock name">
           </form>
-      </nav>
-    </body>
-    </html>`;
+        </nav>`,
+
+  bottom : `</body>
+            </html>`,
+
+  not_found_div : `<div class="underbox_not">없는 종목을 입력하였습니다.</div>`,
+
+  underbox : (stock_data,stock_info_data,stock_1m_data)=>{
+    return `
+    <underbox class="underbox">
+      <div class="underbox__main__index">
+          <div class="underbox_stock-name">${stock_data[0]}</div>
+          <div class="underbox_stock">
+              <span class="underbox_stock_price">${stock_data[1]}</span>
+          </div>
+      </div>
+      <div class="underbox__main__graph" id="container">
+      </div>
+      <div class="underbox_main_info">
+          <div class="underbox_stock_info" id="first_info">
+              <p class="stock_info_keys">전일대비 퍼센트</p>
+              <p class="stock_info_values">${stock_info_data[0]}</p>
+          </div>
+          <div class="underbox_stock_info">
+              <p class="stock_info_keys">주식 시가</p>
+              <p class="stock_info_values">${stock_info_data[1]}</p>
+          </div>
+          <div class="underbox_stock_info">
+              <p class="stock_info_keys">주식 최고가</p>
+              <p class="stock_info_values">${stock_info_data[2]}</p>
+          </div>
+          <div class="underbox_stock_info">
+              <p class="stock_info_keys">주식 최저가</p>
+              <p class="stock_info_values">${stock_info_data[3]}</p>
+          </div>
+      </div>
+    </underbox>
+    <script>Highcharts.chart('container', {
+      title:{
+          text : '${stock_data[0]} 분봉데이터'
+      },
+      chart: {
+          backgroundColor: '#FFFFFF',
+          type: 'line',
+      },
+      legend: {
+          enabled:false
+      },
+      xAxis: {
+          title : {
+              enabled : false
+          },
+          categories: [${time_list}],
+      },
+      yAxis: {
+          title : {
+              enabled : false
+          }
+      },
+      series: [{
+          name : '분봉데이터',
+          data: [${stock_1m_data}]
+      }]
+  });</script>`
+  },
+  /**홈페이지는 top, bottom을 반환한다. */
+  hompage: function(){
+    return `${this.top}${this.bottom}`;
   },
   /**
    *
