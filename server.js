@@ -1,6 +1,4 @@
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
 import bodyParser from "body-parser";
 import { createConnection } from "mysql";
 import broker from "./Mymojito/Mymojito.js";
@@ -25,8 +23,6 @@ const css_list = [
 
 var time_list = fs.readFileSync("./date.txt", "utf8").split(",");
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const server = express();
 const port = 3000;
 //서버 3000번 사용
@@ -86,20 +82,6 @@ var html = {
     stock_info_data = []
   ) {
     var css = "";
-    var d = new Date();
-    var day = d.getDay();
-    var year = d.getFullYear().toString();
-    var month = (d.getMonth() + 1).toString();
-    var days = d.getDate();
-    var date = year + "년" + month + "월" + days + "일 분봉데이터";
-    if (day == 6) {
-      date =
-        year + "년" + month + "월" + (days - 1).toString() + "일 분봉데이터";
-    } else if (day == 0) {
-      date =
-        year + "년" + month + "월" + (days - 2).toString() + "일 분봉데이터";
-    } else
-      date = year + "년" + month + "월" + days.toString() + "일 분봉데이터";
     css_list.map((css_element) => {
       css += `<style>${css_element}</style>${"\n"}`;
     });
@@ -155,9 +137,6 @@ var html = {
         <script>Highcharts.chart('container', {
             title:{
                 text : '${stock_data[0]} 분봉데이터'
-            },
-            subtitle:{
-                text : '${date}'
             },
             chart: {
                 backgroundColor: '#FFFFFF',
