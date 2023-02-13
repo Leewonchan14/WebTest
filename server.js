@@ -130,140 +130,29 @@ var html = {
     return `${this.top}${this.bottom}`;
   },
   /**
-   *
-   * @param {Array} css_list css파일을 읽은 문자열 리스트
-   * @param {Array} script_list script파일을 읽은 문자열 리스트
    * @param {Array} stock_data [종목이름,종목현재가] 리스트
-   * @param {Array} stock_1m_data 분봉데이터가 들어있는 리스트
    * @param {Array} stock_info_data 4가지 정보가 들어있는 리스트
-   * @returns
+   * @param {Array} stock_1m_data 분봉데이터가 들어있는 리스트
    */
   serch_page: function (
-    css_list = [],
-    script_list = [],
     stock_data = [],
-    stock_1m_data = [],
-    stock_info_data = []
-  ) {
-    var css = "";
-    css_list.map((css_element) => {
-      css += `<style>${css_element}</style>${"\n"}`;
-    });
-    var script = "";
-    script_list.map((script_element) => {
-      script += `<script>${script_element}</script>${"\n"}`;
-    });
-    return `<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <title>Winter-Project</title>
-        <meta charset="UTF-8">
-        <script src="https://code.highcharts.com/highcharts.js"></script>
-        ${css}
-    </head>
-    <body>
-        <nav class="top">
-            <a href="/" class="title__box__name">Stock File<br>Stockholm
-                <line class="title__line"></line>
-            </a>
-            <form class="title__search" method="post">
-              <input name="stock" type="text" placeholder="enter the stock name">
-            </form>
-        </nav>
-        <underbox class="underbox">
-            <div class="underbox__main__index">
-                <div class="underbox_stock-name">${stock_data[0]}</div>
-                <div class="underbox_stock">
-                    <span class="underbox_stock_price">${stock_data[1]}</span>
-                </div>
-            </div>
-            <div class="underbox__main__graph" id="container">
-            </div>
-            <div class="underbox_main_info">
-                <div class="underbox_stock_info" id="first_info">
-                    <p class="stock_info_keys">전일대비 퍼센트</p>
-                    <p class="stock_info_values">${stock_info_data[0]}</p>
-                </div>
-                <div class="underbox_stock_info">
-                    <p class="stock_info_keys">주식 시가</p>
-                    <p class="stock_info_values">${stock_info_data[1]}</p>
-                </div>
-                <div class="underbox_stock_info">
-                    <p class="stock_info_keys">주식 최고가</p>
-                    <p class="stock_info_values">${stock_info_data[2]}</p>
-                </div>
-                <div class="underbox_stock_info">
-                    <p class="stock_info_keys">주식 최저가</p>
-                    <p class="stock_info_values">${stock_info_data[3]}</p>
-                </div>
-            </div>
-        </underbox>
-        <script>Highcharts.chart('container', {
-            title:{
-                text : '${stock_data[0]} 분봉데이터'
-            },
-            chart: {
-                backgroundColor: '#FFFFFF',
-                type: 'line',
-            },
-            legend: {
-                enabled:false
-            },
-            xAxis: {
-                title : {
-                    enabled : false
-                },
-                categories: [${time_list}],
-            },
-            yAxis: {
-                title : {
-                    enabled : false
-                }
-            },
-            series: [{
-                name : '분봉데이터',
-                data: [${stock_1m_data}]
-            }]
-        });</script>
-    ${script}
-    </body>
-    </html>`;
+    stock_info_data = [],
+    stock_1m_data = []) 
+    {
+    return `${this.top}${this.underbox(stock_data,stock_info_data,stock_1m_data)}
+    ${this.bottom}`;
   },
-  /** */
-  not_found_page: function (css_list = []) {
-    var css = "";
-    css_list.map((css_element) => {
-      css += `<style>${css_element}</style>`;
-    });
-    return `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-  ${css}
-      <title>Winter-Project</title>
-      <meta charset="UTF-8">
-      <script src="https://code.highcharts.com/highcharts.js"></script>
-  </head>
-  <body>
-      <!-- 제목과 검색창이있는 top태그 -->
-      <nav class="top">
-          <!-- 제목이 적혀있는 h1태그 -->
-          <a href="/" class="title__box__name">Stock File<br>Stockholm
-              <line class="title__line"></line>
-          </a>
-          <!-- 검색창이 있는 form태그 -->
-          <form class="title__search" method="post">
-              <input name="stock" type="text" placeholder="enter the stock name">
-          </form>
-      </nav>
-      <div class="underbox_not">없는 종목을 입력하였습니다.</div>
-    </body>
-    </html>`;
-  },
+  /** 못찾았을때 */
+  not_found_page:function(){
+    return `${this.top}
+    ${this.not_found_div}
+    ${this.bottom}`
+  }
 };
 
 //초기 화면 불러오기
 server.get("/", (req, res) => {
-  res.send(html.hompage(css_list));
+  res.send(html.hompage());
 });
 
 // post로 검색창의 입력값 받아오기
@@ -289,7 +178,7 @@ server.post("/", (req, res) => {
       //사용자가 없는 종목을 입력했을때 == select문의 결과가 빈배열일때
       if (respone.length == 0) {
         console.log(respone);
-        res.send(html.not_found_page(css_list));
+        res.send(html.not_found_page());
       } else {
         /** 종목코드 */
         const stock_code = respone[0]["단축코드"];
@@ -353,7 +242,6 @@ server.post("/", (req, res) => {
                       });
                     } else console.log("create table succesfully");
                     //테이블 생성,초기화 이후 데이터 저장
-                    console.log(mindata);
                     var insert_sql = `INSERT INTO ${stock_kr_string}분봉 values ?;`;
                     //db에 데이터 저장
                     connection.query(
@@ -383,11 +271,9 @@ server.post("/", (req, res) => {
                         });
                         res.send(
                           html.serch_page(
-                            css_list,
-                            [],
                             [stock_kr_string, stock_1m_data.at(-1)],
-                            stock_1m_data,
-                            stock_info_data
+                            stock_info_data,
+                            stock_1m_data
                           )
                         );
                       }
