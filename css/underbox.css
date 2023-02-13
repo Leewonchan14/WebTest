@@ -14,14 +14,17 @@
     border-radius: 8px;
 }
 
-.underbox_stock-name{
+.underbox_stock-name {
     margin: 10px;
     font-size: 30px;
+    display: flex;
+    justify-content: center;
 }
 
-.underbox_stock{
+.underbox_stock {
     margin: 10px;
     display: flex;
+    justify-content: center;
 }
 
 .underbox_stock_price{

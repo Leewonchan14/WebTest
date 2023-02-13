@@ -128,7 +128,6 @@ class Mymojito {
       if(second<10) second = `0${second}`;
       to = `${hour}${minute}${second}`;
     }
-    console.log(to);
     //종이 끝나는 오후 3시 30분 이후에는 3시30분으로 고정
     if (to > "153000") {
       to = "153000";
@@ -137,7 +136,7 @@ class Mymojito {
     else if(to<"090000") {
       return []
     }
-
+    console.log(to);
     //최근 30분 일단 output에 담기 (await로 가져올때까지 기다린다.)
     var output = await this.#fetch_today_1m_ohlcv(symbol, to);
     //30분 데이터 ouput2에 담기
