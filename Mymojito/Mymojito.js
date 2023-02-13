@@ -202,6 +202,7 @@ class Mymojito {
 // var app = fs.readFileSync("./app.txt", "utf8");
 // var secret = fs.readFileSync("./secret.txt", "utf8");
 var broker = new Mymojito(process.env.app,process.env.secret);
+// var broker = new Mymojito(app,secret);
 broker.access_token = await broker.issue_token();
 
 // 토큰을 반복적으로 갱신하는 코드 !!!!인터벌은 변경해야함
