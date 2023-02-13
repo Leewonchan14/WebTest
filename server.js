@@ -262,7 +262,7 @@ server.post("/", (req, res) => {
                   if (err) console.log(err);
                   else {
                     var stock_info_data = Object.values(respone[0]);
-                    var select_sql = `SELECT stck_prpr FROM ${stock_kr_string}분봉`;
+                    var select_sql = `SELECT stck_cntg_hour,stck_prpr FROM ${stock_kr_string}분봉 order by stck_cntg_hour`;
                     connection.query(select_sql, function (err, respone) {
                       if (err) console.log(err);
                       else {
