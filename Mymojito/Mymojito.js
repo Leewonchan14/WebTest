@@ -134,8 +134,8 @@ class Mymojito {
       to = "153000";
     }
     //새벽에는 빈배열을 반환
-    else {
-      return [];
+    else if(to<"090000") {
+      return []
     }
 
     //최근 30분 일단 output에 담기 (await로 가져올때까지 기다린다.)
