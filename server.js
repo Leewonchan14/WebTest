@@ -21,6 +21,11 @@ const css_list = [
   fs.readFileSync("./css/underbox.css", "utf8"),
 ];
 
+var css = "";
+css_list.map((css_element) => {
+  css += `<style>${css_element}</style>`;
+});
+
 var time_list = fs.readFileSync("./date.txt", "utf8").split(",");
 
 const server = express();
