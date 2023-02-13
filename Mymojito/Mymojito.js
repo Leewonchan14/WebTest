@@ -36,7 +36,9 @@ class Mymojito {
 
         fs.writeFileSync("token.dat", JSON.stringify(token_data), "utf8");
 
-        console.log(`토큰 갱신`);
+        if(token_data.access_token == undefined){
+          console.log(`토큰 갱신 실패 token.dat 파일확인!`);
+        } else console.log(`토큰 갱신 성공`);
         this.access_token = `Bearer ${token_data.access_token}`;
 
         resolve(`Bearer ${token_data.access_token}`);
